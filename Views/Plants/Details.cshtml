@@ -1,0 +1,116 @@
+@model Plant
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<section class="plant-detail">
+    <div class="plant-detail-left">
+        @if (string.IsNullOrWhiteSpace(Model.ImageUrl))
+        {
+            <div class="detail-photo is-empty"><i class="fa-regular fa-image" aria-hidden="true"></i></div>
+        }
+        else
+        {
+            <div class="detail-photo" style="background-image: url('@Model.ImageUrl')"></div>
+        }
+
+        <div class="surface detail-panel">
+            <div class="detail-heading">
+                <div>
+                    <p class="eyebrow">@Model.Species</p>
+                    <h1>@Model.Name</h1>
+                    @if (!string.IsNullOrWhiteSpace(Model.Variety))
+                    {
+                        <p class="heading-copy">@Model.Variety</p>
+                    }
+                </div>
+                <span class="status-pill">@Model.Status.GetDisplayName()</span>
+            </div>
+
+            <dl class="fact-grid">
+                <div>
+                    <dt>Локація</dt>
+                    <dd>@(Model.Location ?? "Не вказано")</dd>
+                </div>
+                <div>
+                    <dt>Освітлення</dt>
+                    <dd>@Model.LightRequirement.GetDisplayName()</dd>
+                </div>
+                <div>
+                    <dt>Частота поливу</dt>
+                    <dd>@Model.WateringFrequency.GetDisplayName()</dd>
+                </div>
+                <div>
+                    <dt>Наступний полив</dt>
+                    <dd>@(Model.NextWateringDate?.ToString("dd.MM.yyyy") ?? "Не заплановано")</dd>
+                </div>
+                <div>
+                    <dt>Горщик</dt>
+                    <dd>@(Model.PotDiameterCm.HasValue ? $"{Model.PotDiameterCm:0.0} см" : "Не вказано")</dd>
+                </div>
+                <div>
+                    <dt>У колекції з</dt>
+                    <dd>@(Model.AcquisitionDate?.ToString("dd.MM.yyyy") ?? "Не вказано")</dd>
+                </div>
+            </dl>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Notes))
+            {
+                <p class="notes">@Model.Notes</p>
+            }
+
+            <div class="form-actions">
+                <form asp-action="MarkWatered" asp-route-id="@Model.Id" method="post">
+                    <button type="submit" class="btn btn-primary">Записати полив</button>
+                </form>
+                <a class="btn btn-outline-secondary" asp-controller="CareLogs" asp-action="Create" asp-route-plantId="@Model.Id">Додати догляд</a>
+                <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.Id">Редагувати</a>
+                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Видалити</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="surface care-log-panel">
+        <div class="section-title">
+            <div>
+                <p class="eyebrow">Історія</p>
+                <h2>Журнал догляду</h2>
+            </div>
+            <a asp-controller="CareLogs" asp-action="Create" asp-route-plantId="@Model.Id">Новий запис</a>
+        </div>
+
+        @if (Model.CareLogs.Count == 0)
+        {
+            <p class="empty-state">Для цієї рослини ще немає записів догляду.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Тип</th>
+                            <th>Нотатка</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model.CareLogs)
+                        {
+                            <tr>
+                                <td>@log.PerformedOn.ToString("dd.MM.yyyy")</td>
+                                <td>@log.ActivityType.GetDisplayName()</td>
+                                <td>@(log.Notes ?? "—")</td>
+                                <td class="text-end">
+                                    <a class="btn btn-outline-danger btn-sm" asp-controller="CareLogs" asp-action="Delete" asp-route-id="@log.Id">Видалити</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</section>

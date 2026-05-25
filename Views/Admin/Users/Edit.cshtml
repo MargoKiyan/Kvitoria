@@ -1,0 +1,81 @@
+@model AdminUserEditViewModel
+
+@{
+    ViewData["Title"] = "Редагування користувача";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Адмін-панель</p>
+        <h1>Редагування користувача</h1>
+        <p class="heading-copy">Паролі не відображаються адміністраторам і зберігаються як SHA-256 hash.</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Users">Назад</a>
+</section>
+
+<section class="surface narrow">
+    <form asp-action="EditUser" asp-route-id="@Model.Id" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="form-grid">
+            <div>
+                <div class="label-row">
+                    <label asp-for="Email" class="form-label"></label>
+                    <button class="help-trigger" type="button" data-help-title="Email" data-help="Email користувача не змінюється після реєстрації.">
+                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="input-icon-wrap">
+                    <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+                    <input asp-for="Email" class="form-control" readonly />
+                </div>
+            </div>
+            <div>
+                <div class="label-row">
+                    <label asp-for="Login" class="form-label"></label>
+                    <button class="help-trigger" type="button" data-help-title="Логін" data-help="Малі англійські літери, цифри, крапка або нижнє підкреслення, мінімум 5 символів.">
+                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="input-icon-wrap">
+                    <i class="fa-regular fa-user" aria-hidden="true"></i>
+                    <input asp-for="Login" class="form-control" autocomplete="username" />
+                </div>
+                <span asp-validation-for="Login" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="FullName" class="form-label"></label>
+                <div class="input-icon-wrap">
+                    <i class="fa-regular fa-id-card" aria-hidden="true"></i>
+                    <input asp-for="FullName" class="form-control" />
+                </div>
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div>
+                <div class="label-row">
+                    <label asp-for="BirthDate" class="form-label"></label>
+                    <button class="help-trigger" type="button" data-help-title="Дата народження" data-help="Доступний вік: від 14 до 120 років.">
+                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="input-icon-wrap">
+                    <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                    <input asp-for="BirthDate" asp-format="{0:yyyy-MM-dd}" class="form-control" type="date" />
+                </div>
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+            <label class="form-check">
+                <input asp-for="IsDeleted" class="form-check-input" />
+                <span class="form-check-label">@Html.DisplayNameFor(model => model.IsDeleted)</span>
+            </label>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Зберегти</button>
+            <a class="btn btn-outline-secondary" asp-action="Users">Скасувати</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

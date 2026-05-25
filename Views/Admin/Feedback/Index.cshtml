@@ -1,0 +1,74 @@
+@model AdminFeedbackViewModel
+
+@{
+    ViewData["Title"] = "Звернення";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow"><i class="fa-regular fa-comments"></i> Зворотній зв'язок</p>
+        <h1>Повідомлення користувачів</h1>
+    </div>
+    <div class="heading-actions">
+        <form asp-action="DeleteAllFeedback" method="post" class="inline-form" onsubmit="return confirm('Чи дійсно бажаєте видалити все?');">
+            <button class="btn btn-outline-danger" type="submit"><i class="fa-regular fa-trash-can"></i> Видалити все</button>
+        </form>
+        <a class="btn btn-outline-secondary" asp-action="Index">Назад</a>
+    </div>
+</section>
+
+<section class="surface">
+    @if (Model.Messages.Count == 0)
+    {
+        <p class="empty-state">Звернень поки немає.</p>
+    }
+    else
+    {
+        <div class="care-list">
+            @foreach (var message in Model.Messages)
+            {
+                <article class="feedback-item">
+                    <div>
+                        <p class="eyebrow">@message.CreatedAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm") · @(message.User?.Email ?? "Користувач") · @(message.IsRead ? "Прочитано" : "Нове")</p>
+                        <h2>@message.Subject</h2>
+                        <p>@message.Body</p>
+                        @if (!string.IsNullOrWhiteSpace(message.AdminReply))
+                        {
+                            <div class="reply-box">
+                                <strong><i class="fa-regular fa-reply"></i> Ваша відповідь</strong>
+                                <p>@message.AdminReply</p>
+                                <small>@message.RepliedAtUtc?.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</small>
+                            </div>
+                        }
+                        else
+                        {
+                            <form asp-action="ReplyFeedback" asp-route-id="@message.Id" asp-route-page="@Model.Pagination.CurrentPage" method="post" class="mt-3">
+                                <label class="form-label" for="reply-@message.Id">Відповідь користувачу</label>
+                                <div class="input-icon-wrap textarea-wrap">
+                                    <i class="fa-regular fa-comment" aria-hidden="true"></i>
+                                    <textarea id="reply-@message.Id" name="Reply" class="form-control" rows="3" placeholder="Введіть відповідь"></textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn btn-primary btn-sm" type="submit"><i class="fa-regular fa-paper-plane"></i> Відповісти</button>
+                                </div>
+                            </form>
+                        }
+                    </div>
+                    <div class="feedback-actions">
+                        @if (!message.IsRead)
+                        {
+                            <form asp-action="MarkFeedbackRead" asp-route-id="@message.Id" asp-route-page="@Model.Pagination.CurrentPage" method="post">
+                                <button class="btn btn-outline-secondary btn-sm" type="submit"><i class="fa-regular fa-envelope-open"></i> Прочитано</button>
+                            </form>
+                        }
+                        <form asp-action="DeleteFeedback" asp-route-id="@message.Id" asp-route-page="@Model.Pagination.CurrentPage" method="post">
+                            <button class="btn btn-outline-danger btn-sm" type="submit"><i class="fa-regular fa-trash-can"></i> Видалити</button>
+                        </form>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+<partial name="_Pagination" model="Model.Pagination" />

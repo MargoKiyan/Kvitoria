@@ -1,0 +1,15 @@
+@model Plant
+
+@{
+    ViewData["Title"] = "Видалити рослину";
+}
+
+<section class="surface narrow">
+    <p class="eyebrow">Підтвердження</p>
+    <h1>Видалити @Model.Name?</h1>
+    <p>Картка рослини та всі записи догляду будуть видалені з PostgreSQL.</p>
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="form-actions">
+        <button type="submit" class="btn btn-danger">Видалити</button>
+        <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.Id">Скасувати</a>
+    </form>
+</section>

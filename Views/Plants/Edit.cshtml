@@ -1,0 +1,22 @@
+@model PlantFormViewModel
+
+@{
+    ViewData["Title"] = "Редагування";
+}
+
+<section class="surface narrow">
+    <p class="eyebrow">Картка рослини</p>
+    <h1>Редагувати @Model.Name</h1>
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="mt-4">
+        <input type="hidden" asp-for="Id" />
+        <partial name="_PlantForm" model="Model" />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Оновити</button>
+            <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.Id">Скасувати</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

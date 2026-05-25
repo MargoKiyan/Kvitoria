@@ -1,0 +1,197 @@
+@model CabinetViewModel
+
+@{
+    ViewData["Title"] = "Особистий кабінет";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Профіль</p>
+        <h1>Особистий кабінет</h1>
+        <p class="heading-copy">@Model.Login · @Model.Email · зареєстровано @Model.RegisteredAtUtc.ToLocalTime().ToString("dd.MM.yyyy")</p>
+    </div>
+    @if (!Model.IsAdmin)
+    {
+        <div class="heading-actions">
+            <a class="btn btn-outline-secondary" asp-controller="Feedback" asp-action="Create"><i class="fa-regular fa-message"></i> Зворотній зв'язок</a>
+        </div>
+    }
+</section>
+
+<section class="metric-grid">
+    @if (!Model.IsAdmin)
+    {
+        <article class="metric-card">
+            <span>Мої рослини</span>
+            <strong>@Model.PlantCount</strong>
+        </article>
+        <article class="metric-card accent">
+            <span>Полив завтра</span>
+            <strong>@Model.DueTomorrowCount</strong>
+        </article>
+    }
+    else
+    {
+        <article class="metric-card">
+            <span>Роль</span>
+            <strong>Admin</strong>
+        </article>
+    }
+    <article class="metric-card">
+        <span>Останній вхід</span>
+        <strong>@(Model.LastLoginAtUtc?.ToLocalTime().ToString("dd.MM") ?? "—")</strong>
+    </article>
+</section>
+
+<div class="cabinet-layout">
+    <section class="surface">
+        <p class="eyebrow">Налаштування</p>
+        <h2>Профіль користувача</h2>
+        <form asp-action="Update" method="post" class="mt-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="form-grid single">
+                <div>
+                    <div class="label-row">
+                        <label class="form-label">Email</label>
+                        <button class="help-trigger" type="button" data-help-title="Email" data-help="Електронна пошта не змінюється після реєстрації.">
+                            <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="input-icon-wrap">
+                        <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+                        <input class="form-control" value="@Model.Email" readonly />
+                    </div>
+                </div>
+                <div>
+                    <label asp-for="ProfileForm.FullName" class="form-label"></label>
+                    <div class="input-icon-wrap">
+                        <i class="fa-regular fa-id-card" aria-hidden="true"></i>
+                        <input asp-for="ProfileForm.FullName" class="form-control" placeholder="Введіть ім'я" />
+                    </div>
+                    <span asp-validation-for="ProfileForm.FullName" class="text-danger"></span>
+                </div>
+                <div>
+                    <div class="label-row">
+                        <label asp-for="ProfileForm.BirthDate" class="form-label"></label>
+                        <button class="help-trigger" type="button" data-help-title="Дата народження" data-help="Доступний вік: від 14 до 120 років.">
+                            <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="input-icon-wrap">
+                        <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                        <input asp-for="ProfileForm.BirthDate" asp-format="{0:yyyy-MM-dd}" class="form-control" type="date" />
+                    </div>
+                    <span asp-validation-for="ProfileForm.BirthDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Оновити</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="surface">
+        <div class="security-stack">
+            <div class="security-block">
+                <p class="eyebrow">Безпека</p>
+                <h2>Логін</h2>
+                <p class="heading-copy">
+                    @if (Model.CanChangeLogin)
+                    {
+                        <span>Логін можна змінити зараз.</span>
+                    }
+                    else
+                    {
+                        <span>Наступна зміна логіну: @Model.NextLoginChangeAtUtc?.ToLocalTime().ToString("dd.MM.yyyy")</span>
+                    }
+                </p>
+                <form asp-action="ChangeLogin" method="post" class="mt-3">
+                    <div class="form-grid single">
+                        <div>
+                            <div class="label-row">
+                                <label asp-for="LoginForm.Login" class="form-label"></label>
+                                <button class="help-trigger" type="button" data-help-title="Логін" data-help="Малі англійські літери, цифри, крапка або нижнє підкреслення, мінімум 5 символів.">
+                                    <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="input-icon-wrap">
+                                <i class="fa-regular fa-user" aria-hidden="true"></i>
+                                <input asp-for="LoginForm.Login" class="form-control" autocomplete="username" placeholder="Введіть логін" />
+                            </div>
+                            <span asp-validation-for="LoginForm.Login" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-primary" type="submit" @(Model.CanChangeLogin ? null : "disabled")>Змінити логін</button>
+                        <a class="btn btn-outline-secondary" asp-action="Index">Скасувати</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="security-block">
+                <p class="eyebrow">Безпека</p>
+                <h2>Пароль</h2>
+                <p class="heading-copy">
+                    @if (Model.CanChangePassword)
+                    {
+                        <span>Пароль можна змінити зараз.</span>
+                    }
+                    else
+                    {
+                        <span>Наступна зміна пароля: @Model.NextPasswordChangeAtUtc?.ToLocalTime().ToString("dd.MM.yyyy")</span>
+                    }
+                </p>
+                <form asp-action="ChangePassword" method="post" class="mt-3">
+                    <div class="form-grid single">
+                        <div>
+                            <label asp-for="PasswordForm.CurrentPassword" class="form-label"></label>
+                            <div class="input-icon-wrap password-wrap">
+                                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                                <input asp-for="PasswordForm.CurrentPassword" class="form-control" autocomplete="current-password" placeholder="Введіть поточний пароль" />
+                                <button class="password-toggle" type="button" aria-label="Показати пароль">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="PasswordForm.CurrentPassword" class="text-danger"></span>
+                        </div>
+                        <div>
+                            <div class="label-row">
+                                <label asp-for="PasswordForm.NewPassword" class="form-label"></label>
+                                <button class="help-trigger" type="button" data-help-title="Пароль" data-help="Мінімум 8 символів, перша літера велика, лише англійські літери, цифри або !@@#$%^&amp;*._-.">
+                                    <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="input-icon-wrap password-wrap">
+                                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                                <input asp-for="PasswordForm.NewPassword" class="form-control" autocomplete="new-password" placeholder="Введіть новий пароль" />
+                                <button class="password-toggle" type="button" aria-label="Показати пароль">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="PasswordForm.NewPassword" class="text-danger"></span>
+                        </div>
+                        <div>
+                            <label asp-for="PasswordForm.ConfirmPassword" class="form-label"></label>
+                            <div class="input-icon-wrap password-wrap">
+                                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                                <input asp-for="PasswordForm.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Повторіть пароль" />
+                                <button class="password-toggle" type="button" aria-label="Показати пароль">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="PasswordForm.ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-primary" type="submit" @(Model.CanChangePassword ? null : "disabled")>Змінити пароль</button>
+                        <a class="btn btn-outline-secondary" asp-action="Index">Скасувати</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

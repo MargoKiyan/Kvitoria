@@ -1,0 +1,80 @@
+@model FeedbackPageViewModel
+
+@{
+    ViewData["Title"] = "Зворотній зв'язок";
+}
+
+<section class="surface narrow">
+    <p class="eyebrow"><i class="fa-regular fa-message"></i> Повідомлення адміністратору</p>
+    <h1>Зворотній зв'язок</h1>
+    <form asp-action="Create" method="post" class="mt-4">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="form-grid single">
+            <div>
+                <label asp-for="Form.Subject" class="form-label"></label>
+                <div class="input-icon-wrap">
+                    <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
+                    <input asp-for="Form.Subject" class="form-control" placeholder="Введіть тему звернення" />
+                </div>
+                <span asp-validation-for="Form.Subject" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Form.Body" class="form-label"></label>
+                <div class="input-icon-wrap textarea-wrap">
+                    <i class="fa-regular fa-comment-dots" aria-hidden="true"></i>
+                    <textarea asp-for="Form.Body" class="form-control" rows="8" placeholder="Введіть повідомлення"></textarea>
+                </div>
+                <span asp-validation-for="Form.Body" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit"><i class="fa-regular fa-paper-plane"></i> Надіслати</button>
+            <a class="btn btn-outline-secondary" asp-controller="Cabinet" asp-action="Index">Скасувати</a>
+        </div>
+    </form>
+</section>
+
+<section class="surface narrow mt-4">
+    <div class="section-title">
+        <div>
+            <p class="eyebrow"><i class="fa-regular fa-inbox"></i> Мої звернення</p>
+            <h2>Відповіді адміністратора</h2>
+        </div>
+    </div>
+    @if (Model.Messages.Count == 0)
+    {
+        <p class="empty-state">Ви ще не надсилали звернень.</p>
+    }
+    else
+    {
+        <div class="care-list">
+            @foreach (var message in Model.Messages)
+            {
+                <article class="feedback-item user-feedback">
+                    <div>
+                        <p class="eyebrow">@message.CreatedAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm") · @(message.IsRead ? "Прочитано" : "Очікує відповіді")</p>
+                        <h2>@message.Subject</h2>
+                        <p>@message.Body</p>
+                        @if (!string.IsNullOrWhiteSpace(message.AdminReply))
+                        {
+                            <div class="reply-box">
+                                <strong><i class="fa-regular fa-circle-check"></i> Відповідь адміністратора</strong>
+                                <p>@message.AdminReply</p>
+                                <small>@message.RepliedAtUtc?.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</small>
+                            </div>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+@if (Model.Messages.Count > 0)
+{
+    <partial name="_Pagination" model="Model.Pagination" />
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

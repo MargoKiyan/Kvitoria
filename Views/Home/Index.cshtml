@@ -1,0 +1,72 @@
+@{
+    ViewData["Title"] = "Головна";
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    var isAdmin = User.IsInRole(ApplicationRoleNames.Admin);
+}
+
+<section class="landing-hero" style="background-image: linear-gradient(90deg, rgba(1, 15, 28, 0.82), rgba(1, 15, 28, 0.42)), url('https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&w=1600&q=80');">
+    <div class="landing-copy">
+        <p class="eyebrow">Колекція кімнатних рослин</p>
+        <h1>Kvitoria</h1>
+        <p>
+            Зберігайте улюблені рослини в одному місці, не губіть дати поливу,
+            записуйте догляд і поступово створюйте живу історію своєї домашньої колекції.
+        </p>
+        <div class="landing-actions">
+            @if (!isAuthenticated)
+            {
+                <a class="btn btn-primary" asp-controller="Account" asp-action="Login">
+                    <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                    Увійти
+                </a>
+                <a class="btn btn-hero-secondary" asp-controller="Account" asp-action="Register">
+                    Приєднатись
+                </a>
+            }
+            else if (isAdmin)
+            {
+                <a class="btn btn-primary" asp-controller="Admin" asp-action="Index">
+                    <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+                    До адмін-панелі
+                </a>
+            }
+            else
+            {
+                <a class="btn btn-primary" asp-controller="Plants" asp-action="Index">
+                    <i class="fa-solid fa-leaf" aria-hidden="true"></i>
+                    Перейти до колекції
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="landing-intro">
+    <div>
+        <p class="eyebrow">Для чого це</p>
+        <h2>Спокійний простір для рослин, які вже стали частиною дому</h2>
+    </div>
+    <p>
+        Kvitoria допомагає навести лад у догляді: бачити, які рослини є в колекції,
+        коли їх поливали, що з ними відбувалося і які деталі важливо не забути.
+        Це зручно, коли рослин стає більше, а записки в телефоні вже не рятують.
+    </p>
+</section>
+
+<section class="landing-benefits" aria-label="Можливості Kvitoria">
+    <article class="surface landing-benefit">
+        <i class="fa-solid fa-seedling" aria-hidden="true"></i>
+        <h2>Колекція без хаосу</h2>
+        <p>Назви, види, сорти, локації, фото й нотатки зберігаються в охайних картках.</p>
+    </article>
+    <article class="surface landing-benefit">
+        <i class="fa-solid fa-droplet" aria-hidden="true"></i>
+        <h2>Полив під контролем</h2>
+        <p>Система допомагає не забути про догляд і показує, коли рослина потребує уваги.</p>
+    </article>
+    <article class="surface landing-benefit">
+        <i class="fa-regular fa-note-sticky" aria-hidden="true"></i>
+        <h2>Історія догляду</h2>
+        <p>Кожен полив, пересадку чи огляд можна занотувати, щоб бачити розвиток рослини.</p>
+    </article>
+</section>

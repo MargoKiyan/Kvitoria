@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kvitoria</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Kvitoria.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg app-navbar">
+            <div class="container">
+                <a class="navbar-brand brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="brand-mark" aria-hidden="true"><i class="fa-solid fa-leaf"></i></span>
+                    <span>Kvitoria</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            if (User.IsInRole(ApplicationRoleNames.Admin))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Admin" asp-action="Index">Адмін-панель</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Admin" asp-action="Feedback">Звернення</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Головна</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Plants" asp-action="Index">Колекція</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Cabinet" asp-action="Index">Кабінет</a>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post">
+                                    <button class="btn btn-outline-secondary btn-sm icon-only logout-button" type="submit" title="Вийти" aria-label="Вийти">
+                                        <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">Вхід</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Register">Реєстрація</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="app-shell">
+        <main role="main" class="container pb-5">
+            @if (TempData["StatusMessage"] is string statusMessage)
+            {
+                <div class="status-message" role="status">@statusMessage</div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer site-footer">
+        <div class="container">
+            <span>&copy; 2026 Kvitoria</span>
+            <div class="footer-links">
+                @if (User.IsInRole(ApplicationRoleNames.Admin))
+                {
+                    <a asp-area="" asp-controller="Admin" asp-action="Feedback"><i class="fa-regular fa-message"></i> Зворотній зв'язок</a>
+                }
+                else
+                {
+                    <a asp-area="" asp-controller="Feedback" asp-action="Create"><i class="fa-regular fa-message"></i> Зворотній зв'язок</a>
+                }
+                <a asp-area="" asp-controller="Home" asp-action="Privacy">Про застосунок</a>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content help-modal">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="helpModalTitle">Підказка</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
+                </div>
+                <div class="modal-body" id="helpModalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

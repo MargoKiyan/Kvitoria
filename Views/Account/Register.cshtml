@@ -1,0 +1,97 @@
+@model RegisterViewModel
+
+@{
+    ViewData["Title"] = "Реєстрація";
+}
+
+<section class="surface auth-panel">
+    <p class="eyebrow">Новий користувач</p>
+    <h1>Реєстрація</h1>
+    <form asp-action="Register" method="post" class="mt-4">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="form-grid single">
+            <div>
+                <div class="label-row">
+                    <label asp-for="Login" class="form-label"></label>
+                    <button class="help-trigger" type="button" data-help-title="Логін" data-help="Малі англійські літери, цифри, крапка або нижнє підкреслення, мінімум 5 символів.">
+                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="input-icon-wrap">
+                    <i class="fa-regular fa-user" aria-hidden="true"></i>
+                    <input asp-for="Login" class="form-control" autocomplete="username" placeholder="Введіть логін" />
+                </div>
+                <span asp-validation-for="Login" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="FullName" class="form-label"></label>
+                <div class="input-icon-wrap">
+                    <i class="fa-regular fa-id-card" aria-hidden="true"></i>
+                    <input asp-for="FullName" class="form-control" autocomplete="name" placeholder="Введіть ім'я" />
+                </div>
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div>
+                <div class="label-row">
+                    <label asp-for="BirthDate" class="form-label"></label>
+                    <button class="help-trigger" type="button" data-help-title="Дата народження" data-help="Доступний вік: від 14 до 120 років.">
+                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="input-icon-wrap">
+                    <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                    <input asp-for="BirthDate" asp-format="{0:yyyy-MM-dd}" class="form-control" type="date" />
+                </div>
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+            <div>
+                <div class="label-row">
+                    <label asp-for="Email" class="form-label"></label>
+                    <button class="help-trigger" type="button" data-help-title="Email" data-help="Вкажіть чинну електронну пошту у форматі name@example.com. Після реєстрації email не змінюється.">
+                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="input-icon-wrap">
+                    <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+                    <input asp-for="Email" class="form-control" type="text" autocomplete="email" placeholder="Введіть email" />
+                </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div>
+                <div class="label-row">
+                    <label asp-for="Password" class="form-label"></label>
+                    <button class="help-trigger" type="button" data-help-title="Пароль" data-help="Мінімум 8 символів, перша літера велика, лише англійські літери, цифри або !@@#$%^&amp;*._-.">
+                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="input-icon-wrap password-wrap">
+                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                    <input asp-for="Password" class="form-control" autocomplete="new-password" placeholder="Введіть пароль" />
+                    <button class="password-toggle" type="button" aria-label="Показати пароль">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <div class="input-icon-wrap password-wrap">
+                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                    <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Повторіть пароль" />
+                    <button class="password-toggle" type="button" aria-label="Показати пароль">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit"><i class="fa-regular fa-circle-check"></i> Зареєструватися</button>
+            <a class="btn btn-outline-secondary" asp-action="Login">Вже маю акаунт</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

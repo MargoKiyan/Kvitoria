@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kvitoria-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: kvitoria
+      POSTGRES_USER: kvitoria
+      POSTGRES_PASSWORD: kvitoria_dev
+    ports:
+      - "55432:5432"
+    volumes:
+      - kvitoria_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  kvitoria_postgres_data:

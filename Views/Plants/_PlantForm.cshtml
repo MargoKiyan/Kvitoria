@@ -1,0 +1,191 @@
+@model PlantFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<div class="form-grid">
+    <div>
+        <label asp-for="Name" class="form-label"></label>
+        <div class="input-icon-wrap">
+            <i class="fa-solid fa-leaf" aria-hidden="true"></i>
+            <input asp-for="Name" class="form-control" placeholder="Введіть назву рослини" />
+        </div>
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div>
+        <div class="label-row">
+            <label asp-for="PlantSpeciesId" class="form-label"></label>
+            <button class="help-trigger" type="button" data-help-title="Вид рослини" data-help="Оберіть вид із каталогу, який підтримує адміністратор.">
+                <i class="fa-regular fa-circle-question"></i>
+            </button>
+        </div>
+        <div class="input-icon-wrap select-wrap">
+            <i class="fa-solid fa-seedling" aria-hidden="true"></i>
+            <select asp-for="PlantSpeciesId" class="form-select" id="PlantSpeciesId">
+                <option value="">Оберіть вид</option>
+                @foreach (var species in Model.SpeciesOptions)
+                {
+                    <option value="@species.Id">@species.Name</option>
+                }
+            </select>
+        </div>
+        <span asp-validation-for="PlantSpeciesId" class="text-danger"></span>
+    </div>
+    <div>
+        <div class="label-row">
+            <label asp-for="PlantVarietyId" class="form-label"></label>
+            <button class="help-trigger" type="button" data-help-title="Форма або сорт" data-help="Після вибору виду перша форма або сорт підтягнеться автоматично, але її можна перевибрати.">
+                <i class="fa-regular fa-circle-question"></i>
+            </button>
+        </div>
+        <div class="input-icon-wrap select-wrap">
+            <i class="fa-solid fa-spa" aria-hidden="true"></i>
+            <select asp-for="PlantVarietyId" class="form-select" id="PlantVarietyId">
+                <option value="">Без форми або сорту</option>
+                @foreach (var variety in Model.VarietyOptions)
+                {
+                    <option value="@variety.Id" data-species-id="@variety.PlantSpeciesId">@variety.TypeName: @variety.Name</option>
+                }
+            </select>
+        </div>
+        <span asp-validation-for="PlantVarietyId" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Status" class="form-label"></label>
+        <div class="input-icon-wrap select-wrap">
+            <i class="fa-regular fa-circle-check" aria-hidden="true"></i>
+            <select asp-for="Status" asp-items="Model.StatusOptions" class="form-select"></select>
+        </div>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="LightRequirement" class="form-label"></label>
+        <div class="input-icon-wrap select-wrap">
+            <i class="fa-regular fa-sun" aria-hidden="true"></i>
+            <select asp-for="LightRequirement" asp-items="Model.LightRequirementOptions" class="form-select"></select>
+        </div>
+        <span asp-validation-for="LightRequirement" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="WateringFrequency" class="form-label"></label>
+        <div class="input-icon-wrap select-wrap">
+            <i class="fa-solid fa-droplet" aria-hidden="true"></i>
+            <select asp-for="WateringFrequency" asp-items="Model.WateringFrequencyOptions" class="form-select"></select>
+        </div>
+        <span asp-validation-for="WateringFrequency" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Location" class="form-label"></label>
+        <div class="input-icon-wrap">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            <input asp-for="Location" class="form-control" placeholder="Введіть локацію" />
+        </div>
+        <span asp-validation-for="Location" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="PotDiameterCm" class="form-label"></label>
+        <div class="input-icon-wrap">
+            <i class="fa-solid fa-ruler" aria-hidden="true"></i>
+            <input asp-for="PotDiameterCm" class="form-control" type="number" step="0.1" placeholder="Введіть діаметр" />
+        </div>
+        <span asp-validation-for="PotDiameterCm" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="AcquisitionDate" class="form-label"></label>
+        <div class="input-icon-wrap">
+            <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+            <input asp-for="AcquisitionDate" asp-format="{0:yyyy-MM-dd}" class="form-control" type="date" />
+        </div>
+        <span asp-validation-for="AcquisitionDate" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="AcquisitionSource" class="form-label"></label>
+        <div class="input-icon-wrap">
+            <i class="fa-solid fa-store" aria-hidden="true"></i>
+            <input asp-for="AcquisitionSource" class="form-control" placeholder="Введіть джерело" />
+        </div>
+        <span asp-validation-for="AcquisitionSource" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="LastWateredDate" class="form-label"></label>
+        <div class="input-icon-wrap">
+            <i class="fa-solid fa-droplet" aria-hidden="true"></i>
+            <input asp-for="LastWateredDate" asp-format="{0:yyyy-MM-dd}" class="form-control" type="date" />
+        </div>
+        <span asp-validation-for="LastWateredDate" class="text-danger"></span>
+    </div>
+    <div class="form-span">
+        <label asp-for="Photo" class="form-label"></label>
+        <input type="hidden" asp-for="ImageUrl" />
+        <div class="image-upload-control">
+            <input asp-for="Photo" class="visually-hidden image-upload-input" type="file" accept="image/*" />
+            <label class="btn btn-outline-secondary image-upload-button" asp-for="Photo">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                Зображення рослини
+            </label>
+            <span class="image-upload-name" data-empty-text="Файл не вибрано">
+                @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                {
+                    <text>Поточне фото збережено</text>
+                }
+                else
+                {
+                    <text>Файл не вибрано</text>
+                }
+            </span>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+        {
+            <span class="current-file-note">Виберіть новий файл, щоб замінити поточне фото.</span>
+        }
+        <span asp-validation-for="Photo" class="text-danger"></span>
+    </div>
+    <div class="form-span">
+        <label asp-for="Notes" class="form-label"></label>
+        <div class="input-icon-wrap textarea-wrap">
+            <i class="fa-regular fa-note-sticky" aria-hidden="true"></i>
+            <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Введіть нотатки"></textarea>
+        </div>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+</div>
+
+<script>
+    (() => {
+        const speciesSelect = document.getElementById("PlantSpeciesId");
+        const varietySelect = document.getElementById("PlantVarietyId");
+
+        if (!speciesSelect || !varietySelect) {
+            return;
+        }
+
+        const filterVarieties = () => {
+            const selectedSpecies = speciesSelect.value;
+            let firstAvailable = "";
+            const currentOption = varietySelect.selectedOptions[0];
+            const currentStillVisible = currentOption
+                && currentOption.value
+                && currentOption.dataset.speciesId === selectedSpecies;
+
+            Array.from(varietySelect.options).forEach(option => {
+                if (!option.value) {
+                    option.hidden = false;
+                    return;
+                }
+
+                const belongs = option.dataset.speciesId === selectedSpecies;
+                option.hidden = !belongs;
+
+                if (belongs && !firstAvailable) {
+                    firstAvailable = option.value;
+                }
+            });
+
+            if (!currentStillVisible) {
+                varietySelect.value = firstAvailable || "";
+            }
+        };
+        
+        speciesSelect.addEventListener("change", filterVarieties);
+        filterVarieties();
+    })();
+</script>

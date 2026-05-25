@@ -1,0 +1,21 @@
+@model PlantFormViewModel
+
+@{
+    ViewData["Title"] = "Нова рослина";
+}
+
+<section class="surface narrow">
+    <p class="eyebrow">Нова картка</p>
+    <h1>Додати рослину</h1>
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="mt-4">
+        <partial name="_PlantForm" model="Model" />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Зберегти</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Скасувати</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

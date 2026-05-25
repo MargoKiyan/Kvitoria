@@ -1,0 +1,40 @@
+@model CareLogFormViewModel
+
+@{
+    ViewData["Title"] = "Новий догляд";
+}
+
+<section class="surface narrow">
+    <p class="eyebrow">@Model.PlantName</p>
+    <h1>Додати запис догляду</h1>
+    <form asp-action="Create" method="post" class="mt-4">
+        <input type="hidden" asp-for="PlantId" />
+        <input type="hidden" asp-for="PlantName" />
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="form-grid single">
+            <div>
+                <label asp-for="ActivityType" class="form-label"></label>
+                <select asp-for="ActivityType" asp-items="Model.ActivityTypeOptions" class="form-select"></select>
+                <span asp-validation-for="ActivityType" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="PerformedOn" class="form-label"></label>
+                <input asp-for="PerformedOn" asp-format="{0:yyyy-MM-dd}" type="date" class="form-control" />
+                <span asp-validation-for="PerformedOn" class="text-danger"></span>
+            </div>
+            <div class="form-span">
+                <label asp-for="Notes" class="form-label"></label>
+                <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Зберегти</button>
+            <a class="btn btn-outline-secondary" asp-controller="Plants" asp-action="Details" asp-route-id="@Model.PlantId">Скасувати</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

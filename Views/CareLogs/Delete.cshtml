@@ -1,0 +1,19 @@
+@model CareLog
+
+@{
+    ViewData["Title"] = "Видалити запис";
+}
+
+<section class="surface narrow">
+    <p class="eyebrow">@Model.Plant?.Name</p>
+    <h1>Видалити запис догляду?</h1>
+    <p>@Model.PerformedOn.ToString("dd.MM.yyyy") · @Model.ActivityType.GetDisplayName()</p>
+    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+    {
+        <p class="notes">@Model.Notes</p>
+    }
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="form-actions">
+        <button type="submit" class="btn btn-danger">Видалити</button>
+        <a class="btn btn-outline-secondary" asp-controller="Plants" asp-action="Details" asp-route-id="@Model.PlantId">Скасувати</a>
+    </form>
+</section>

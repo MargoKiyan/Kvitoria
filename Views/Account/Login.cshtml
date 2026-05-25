@@ -1,0 +1,56 @@
+@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Вхід";
+}
+
+<section class="surface auth-panel">
+    <p class="eyebrow">Авторизація</p>
+    <h1>Увійти до Kvitoria</h1>
+    <form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" class="mt-4">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="form-grid single">
+            <div>
+                <div class="label-row">
+                    <label asp-for="Login" class="form-label"></label>
+                    <button class="help-trigger" type="button" data-help-title="Логін" data-help="Малі англійські літери, цифри, крапка або нижнє підкреслення, мінімум 5 символів.">
+                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="input-icon-wrap">
+                    <i class="fa-regular fa-user" aria-hidden="true"></i>
+                    <input asp-for="Login" class="form-control" autocomplete="username" placeholder="Введіть логін" />
+                </div>
+                <span asp-validation-for="Login" class="text-danger"></span>
+            </div>
+            <div>
+                <div class="label-row">
+                    <label asp-for="Password" class="form-label"></label>
+                    <button class="help-trigger" type="button" data-help-title="Пароль" data-help="Мінімум 8 символів, перша літера велика, лише англійські літери, цифри або !@@#$%^&amp;*._-.">
+                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="input-icon-wrap password-wrap">
+                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                    <input asp-for="Password" class="form-control" autocomplete="current-password" placeholder="Введіть пароль" />
+                    <button class="password-toggle" type="button" aria-label="Показати пароль">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <label class="form-check">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <span class="form-check-label">@Html.DisplayNameFor(model => model.RememberMe)</span>
+            </label>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-right-to-bracket"></i> Увійти</button>
+            <a class="btn btn-outline-secondary" asp-action="Register">Створити акаунт</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

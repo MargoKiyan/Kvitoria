@@ -1,0 +1,202 @@
+@model AdminPlantsViewModel
+
+@{
+    ViewData["Title"] = "Каталог рослин";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Адмін-панель</p>
+        <h1>Каталог видів рослин</h1>
+        <p class="heading-copy">@Model.SpeciesCount видів, @Model.VarietyCount форм і сортів у базі.</p>
+    </div>
+    <div class="heading-actions">
+        <form asp-action="DeleteAllPlantCatalog" method="post" class="inline-form" onsubmit="return confirm('Чи дійсно бажаєте видалити все?');">
+            <button class="btn btn-outline-danger" type="submit"><i class="fa-regular fa-trash-can"></i> Видалити все</button>
+        </form>
+        <a class="btn btn-outline-secondary" asp-action="Index">Назад</a>
+    </div>
+</section>
+
+<section class="surface">
+    <form class="filter-bar catalog-filter-bar" method="get" asp-action="Plants">
+        <div>
+            <label asp-for="Search">Пошук</label>
+            <div class="input-icon-wrap">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input asp-for="Search" class="form-control" placeholder="Вид, форма або сорт" />
+            </div>
+        </div>
+        <div>
+            <label asp-for="VariantFilter">Фільтр</label>
+            <select asp-for="VariantFilter" class="form-select">
+                <option value="all">Усі види</option>
+                <option value="with_variants">З формами/сортами</option>
+                <option value="without_variants">Без форм/сортів</option>
+            </select>
+        </div>
+        <div>
+            <label asp-for="Sort">Сортування</label>
+            <select asp-for="Sort" class="form-select">
+                <option value="species_asc">Вид А-Я</option>
+                <option value="species_desc">Вид Я-А</option>
+                <option value="variant_count_desc">Більше форм/сортів</option>
+                <option value="variant_count_asc">Менше форм/сортів</option>
+            </select>
+        </div>
+        <div class="filter-actions">
+            <button class="btn btn-primary icon-only" type="submit" title="Застосувати" aria-label="Застосувати">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+            <a class="btn btn-outline-secondary" asp-action="Plants">Скинути</a>
+        </div>
+    </form>
+</section>
+
+<div class="dashboard-grid mt-4">
+    <section class="surface">
+        <p class="eyebrow">Новий запис</p>
+        <h2>Додати вид</h2>
+        <form asp-action="AddPlantSpecies" method="post" class="mt-3">
+            <div class="form-grid single">
+                <div>
+                    <label asp-for="SpeciesForm.Name" class="form-label"></label>
+                    <div class="input-icon-wrap">
+                        <i class="fa-solid fa-seedling" aria-hidden="true"></i>
+                        <input asp-for="SpeciesForm.Name" class="form-control" name="Name" placeholder="Monstera deliciosa" />
+                    </div>
+                    <span asp-validation-for="SpeciesForm.Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Додати вид</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="surface">
+        <p class="eyebrow">Форма або сорт</p>
+        <h2>Додати до виду</h2>
+        <form asp-action="AddPlantVariety" method="post" class="mt-3">
+            <div class="form-grid single">
+                <div>
+                    <label asp-for="VarietyForm.PlantSpeciesId" class="form-label"></label>
+                    <div class="input-icon-wrap select-wrap">
+                        <i class="fa-solid fa-seedling" aria-hidden="true"></i>
+                        <select asp-for="VarietyForm.PlantSpeciesId" class="form-select" name="PlantSpeciesId">
+                            <option value="">Оберіть вид</option>
+                            @foreach (var species in Model.SpeciesOptions)
+                            {
+                                <option value="@species.Id">@species.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label asp-for="VarietyForm.Type" class="form-label"></label>
+                    <div class="input-icon-wrap select-wrap">
+                        <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                        <select asp-for="VarietyForm.Type" class="form-select" name="Type">
+                            @foreach (PlantVariantType type in Enum.GetValues<PlantVariantType>())
+                            {
+                                <option value="@type">@type.GetDisplayName()</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label asp-for="VarietyForm.Name" class="form-label"></label>
+                    <div class="input-icon-wrap">
+                        <i class="fa-solid fa-spa" aria-hidden="true"></i>
+                        <input asp-for="VarietyForm.Name" class="form-control" name="Name" placeholder="Albo Variegata" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Додати форму/сорт</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+<section class="surface mt-4">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Вид</th>
+                    <th>Форми/сорти</th>
+                    <th>Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Species.Count == 0)
+                {
+                    <tr>
+                        <td colspan="3" class="text-muted">Видів за цими параметрами не знайдено.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var species in Model.Species)
+                    {
+                        <tr>
+                            <td>
+                                <form asp-action="UpdatePlantSpecies" asp-route-id="@species.Id" method="post" class="inline-edit-form">
+                                    <input class="form-control" name="Name" value="@species.Name" />
+                                    <button class="btn btn-outline-secondary btn-sm" type="submit">Оновити</button>
+                                </form>
+                            </td>
+                            <td>
+                                @if (species.Varieties.Count == 0)
+                                {
+                                    <span class="text-muted">Без форм або сортів</span>
+                                }
+                                else
+                                {
+                                    <div class="taxonomy-list">
+                                        @foreach (var variety in species.Varieties.OrderBy(item => item.Name))
+                                        {
+                                            <form asp-action="UpdatePlantVariety" asp-route-id="@variety.Id" method="post" class="taxonomy-row">
+                                                <input type="hidden" name="PlantSpeciesId" value="@species.Id" />
+                                                <select class="form-select" name="Type">
+                                                    @foreach (PlantVariantType type in Enum.GetValues<PlantVariantType>())
+                                                    {
+                                                        if (type == variety.Type)
+                                                        {
+                                                            <option value="@type" selected>@type.GetDisplayName()</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@type">@type.GetDisplayName()</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <input class="form-control" name="Name" value="@variety.Name" />
+                                                <button class="btn btn-outline-secondary btn-sm" type="submit">Оновити</button>
+                                            </form>
+                                            <form asp-action="DeletePlantVariety" asp-route-id="@variety.Id" method="post" class="inline-form">
+                                                <button class="btn btn-outline-danger btn-sm" type="submit">Видалити @variety.Type.GetDisplayName().ToLower()</button>
+                                            </form>
+                                        }
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <form asp-action="DeletePlantSpecies" asp-route-id="@species.Id" method="post" class="inline-form">
+                                    <button class="btn btn-outline-danger btn-sm" type="submit">Видалити вид</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<partial name="_Pagination" model="Model.Pagination" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

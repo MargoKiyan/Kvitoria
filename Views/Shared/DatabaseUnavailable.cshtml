@@ -1,0 +1,12 @@
+@model DatabaseIssueViewModel
+
+<section class="surface database-state">
+    <p class="eyebrow">Стан бази даних</p>
+    <h2>@Model.Title</h2>
+    <p>@Model.Message</p>
+    <div class="setup-steps">
+        <code>docker compose up -d postgres</code>
+        <code>Host=127.0.0.1;Port=55432;Database=kvitoria;Username=kvitoria;Password=kvitoria_dev;Timeout=2;Command Timeout=5</code>
+    </div>
+    <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Оновити</a>
+</section>

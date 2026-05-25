@@ -1,0 +1,89 @@
+@model PlantListViewModel
+
+@{
+    ViewData["Title"] = "Колекція";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Каталог</p>
+        <h1>Колекція рослин</h1>
+        <p class="heading-copy">@Model.TotalCount рослин у базі, @Model.NeedsAttentionCount потребують уваги.</p>
+    </div>
+    <div class="heading-actions">
+        <a class="btn btn-primary" asp-action="Create">Додати рослину</a>
+    </div>
+</section>
+
+<section class="surface">
+    <form class="filter-bar" method="get" asp-action="Index">
+        <div>
+            <label asp-for="Search">Пошук</label>
+            <div class="input-icon-wrap">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input asp-for="Search" class="form-control" placeholder="Назва, вид, сорт або локація" />
+            </div>
+        </div>
+        <div>
+            <label asp-for="Status">Статус</label>
+            <select asp-for="Status" asp-items="Model.StatusOptions" class="form-select"></select>
+        </div>
+        <div class="filter-actions">
+            <button class="btn btn-primary icon-only" type="submit" title="Знайти" aria-label="Знайти">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Скинути</a>
+        </div>
+    </form>
+</section>
+
+@if (Model.Plants.Count == 0)
+{
+    <section class="surface mt-4">
+        <p class="empty-state">За цими параметрами рослин не знайдено.</p>
+    </section>
+}
+else
+{
+    <section class="plant-card-grid paginated-grid mt-4">
+        @foreach (var plant in Model.Plants)
+        {
+            <article class="plant-card">
+                @if (string.IsNullOrWhiteSpace(plant.ImageUrl))
+                {
+                    <a class="plant-photo is-empty" asp-action="Details" asp-route-id="@plant.Id" aria-label="@plant.Name">
+                        <i class="fa-regular fa-image"></i>
+                    </a>
+                }
+                else
+                {
+                    <a class="plant-photo" style="background-image: url('@plant.ImageUrl')" asp-action="Details" asp-route-id="@plant.Id" aria-label="@plant.Name"></a>
+                }
+                <div class="plant-card-body">
+                    <div class="plant-card-title">
+                        <div>
+                            <h2>@plant.Name</h2>
+                            <p>@plant.Species</p>
+                        </div>
+                        <span class="status-pill">@plant.Status.GetDisplayName()</span>
+                    </div>
+                    <dl class="mini-facts">
+                        <div>
+                            <dt>Локація</dt>
+                            <dd>@(plant.Location ?? "Не вказано")</dd>
+                        </div>
+                        <div>
+                            <dt>Полив</dt>
+                            <dd>@(plant.NextWateringDate?.ToString("dd.MM.yyyy") ?? "Не заплановано")</dd>
+                        </div>
+                    </dl>
+                    <div class="card-actions">
+                        <a class="btn btn-outline-secondary btn-sm" asp-action="Details" asp-route-id="@plant.Id">Картка</a>
+                        <a class="btn btn-outline-secondary btn-sm" asp-action="Edit" asp-route-id="@plant.Id">Редагувати</a>
+                    </div>
+                </div>
+            </article>
+        }
+    </section>
+    <partial name="_Pagination" model="Model.Pagination" />
+}

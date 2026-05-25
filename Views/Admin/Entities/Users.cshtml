@@ -1,0 +1,126 @@
+@model AdminUsersViewModel
+
+@{
+    ViewData["Title"] = "Користувачі";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Адмін-панель</p>
+        <h1>Користувачі</h1>
+        <p class="heading-copy">@Model.TotalUsers користувачів, @Model.ActiveUsers активних, @Model.DeletedUsers видалених акаунтів у базі.</p>
+    </div>
+    <div class="heading-actions">
+        <form asp-action="DeleteAllUsers" method="post" class="inline-form" onsubmit="return confirm('Чи дійсно бажаєте видалити всі акаунти користувачів з бази даних без можливості відновлення? Адміністратори не будуть видалені.');">
+            <button class="btn btn-outline-danger" type="submit"><i class="fa-regular fa-trash-can"></i> Видалити все</button>
+        </form>
+        <a class="btn btn-outline-secondary" asp-action="Index">Назад</a>
+    </div>
+</section>
+
+<section class="surface">
+    <form class="filter-bar admin-filter-bar" method="get" asp-action="Users">
+        <div>
+            <label asp-for="Search">Пошук</label>
+            <div class="input-icon-wrap">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input asp-for="Search" class="form-control" placeholder="Логін, email або ім'я" />
+            </div>
+        </div>
+        <div>
+            <label asp-for="Status">Статус</label>
+            <select asp-for="Status" class="form-select">
+                <option value="all">Усі</option>
+                <option value="active">Активні</option>
+                <option value="deleted">Видалені</option>
+            </select>
+        </div>
+        <div>
+            <label asp-for="Role">Роль</label>
+            <select asp-for="Role" class="form-select">
+                <option value="all">Усі ролі</option>
+                <option value="@ApplicationRoleNames.Admin">Admin</option>
+                <option value="@ApplicationRoleNames.User">User</option>
+            </select>
+        </div>
+        <div>
+            <label asp-for="Sort">Сортування</label>
+            <select asp-for="Sort" class="form-select">
+                <option value="login_asc">Логін А-Я</option>
+                <option value="login_desc">Логін Я-А</option>
+                <option value="email_asc">Email А-Я</option>
+                <option value="email_desc">Email Я-А</option>
+                <option value="name_asc">Ім'я А-Я</option>
+                <option value="name_desc">Ім'я Я-А</option>
+                <option value="registered_desc">Новіші спочатку</option>
+                <option value="registered_asc">Старіші спочатку</option>
+            </select>
+        </div>
+        <div class="filter-actions">
+            <button class="btn btn-primary icon-only" type="submit" title="Застосувати" aria-label="Застосувати">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+            <a class="btn btn-outline-secondary" asp-action="Users">Скинути</a>
+        </div>
+    </form>
+</section>
+
+<section class="surface admin-list-section">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Логін</th>
+                    <th>Email</th>
+                    <th>Ім'я</th>
+                    <th>Дата народження</th>
+                    <th>Ролі</th>
+                    <th>Реєстрація</th>
+                    <th>Статус</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Users.Count == 0)
+                {
+                    <tr>
+                        <td colspan="8" class="text-muted">Користувачів за цими параметрами не знайдено.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var row in Model.Users)
+                    {
+                        var user = row.User;
+                        <tr>
+                            <td>@user.UserName</td>
+                            <td>@user.Email</td>
+                            <td>@user.FullName</td>
+                            <td>@user.BirthDate.ToString("dd.MM.yyyy")</td>
+                            <td>@string.Join(", ", row.Roles)</td>
+                            <td>@user.RegisteredAtUtc.ToLocalTime().ToString("dd.MM.yyyy")</td>
+                            <td>@(user.IsDeleted ? "Деактивовано" : "Активний")</td>
+                            <td class="text-end">
+                                <a class="btn btn-outline-secondary btn-sm" asp-action="EditUser" asp-route-id="@user.Id">Редагувати</a>
+                                @if (user.IsDeleted)
+                                {
+                                    <form asp-action="RestoreUser" asp-route-id="@user.Id" method="post" class="inline-form">
+                                        <button class="btn btn-outline-secondary btn-sm" type="submit">Відновити</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="DeleteUser" asp-route-id="@user.Id" method="post" class="inline-form">
+                                        <button class="btn btn-outline-danger btn-sm" type="submit">Деактивувати</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<partial name="_Pagination" model="Model.Pagination" />

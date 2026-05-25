@@ -1,0 +1,63 @@
+# Build results
+bin/
+obj/
+.bin/
+.obj/
+[Bb]in/
+[Oo]bj/
+
+# Local .NET SDK/cache folder
+.dotnet_home/
+
+# IDE and editor files
+.idea/
+.idea_modules/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+*.DotSettings.user
+*.sln.iml
+
+# Rider / JetBrains
+_ReSharper*/
+*.ReSharper
+*.resharper
+
+# Visual Studio Code
+.vscode/
+
+# Git internals
+.git/
+
+# macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.TemporaryItems
+.VolumeIcon.icns
+Icon?
+
+# Documentation files requested to stay out of commits
+docs/
+*.md
+
+# Generated application data
+App_Data/Reports/
+App_Data/Reports/**
+App_Data/Outbox/
+App_Data/Outbox/**
+
+# Local configuration
+appsettings.Local.json
+appsettings.*.Local.json
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
