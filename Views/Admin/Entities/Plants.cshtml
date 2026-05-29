@@ -6,7 +6,7 @@
 
 <section class="page-heading">
     <div>
-        <p class="eyebrow">Адмін-панель</p>
+        <p class="eyebrow"><i class="fa-solid fa-seedling" aria-hidden="true"></i> Адмін-панель</p>
         <h1>Каталог видів рослин</h1>
         <p class="heading-copy">@Model.SpeciesCount видів, @Model.VarietyCount форм і сортів у базі.</p>
     </div>
@@ -55,7 +55,7 @@
 
 <div class="dashboard-grid mt-4">
     <section class="surface">
-        <p class="eyebrow">Новий запис</p>
+        <p class="eyebrow"><i class="fa-solid fa-plus" aria-hidden="true"></i> Новий запис</p>
         <h2>Додати вид</h2>
         <form asp-action="AddPlantSpecies" method="post" class="mt-3">
             <div class="form-grid single">
@@ -75,7 +75,7 @@
     </section>
 
     <section class="surface">
-        <p class="eyebrow">Форма або сорт</p>
+        <p class="eyebrow"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Форма або сорт</p>
         <h2>Додати до виду</h2>
         <form asp-action="AddPlantVariety" method="post" class="mt-3">
             <div class="form-grid single">

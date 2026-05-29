@@ -6,7 +6,7 @@
 
 <section class="page-heading">
     <div>
-        <p class="eyebrow">Профіль</p>
+        <p class="eyebrow"><i class="fa-regular fa-user" aria-hidden="true"></i> Профіль</p>
         <h1>Особистий кабінет</h1>
         <p class="heading-copy">@Model.Login · @Model.Email · зареєстровано @Model.RegisteredAtUtc.ToLocalTime().ToString("dd.MM.yyyy")</p>
     </div>
@@ -18,34 +18,9 @@
     }
 </section>
 
-<section class="metric-grid">
-    @if (!Model.IsAdmin)
-    {
-        <article class="metric-card">
-            <span>Мої рослини</span>
-            <strong>@Model.PlantCount</strong>
-        </article>
-        <article class="metric-card accent">
-            <span>Полив завтра</span>
-            <strong>@Model.DueTomorrowCount</strong>
-        </article>
-    }
-    else
-    {
-        <article class="metric-card">
-            <span>Роль</span>
-            <strong>Admin</strong>
-        </article>
-    }
-    <article class="metric-card">
-        <span>Останній вхід</span>
-        <strong>@(Model.LastLoginAtUtc?.ToLocalTime().ToString("dd.MM") ?? "—")</strong>
-    </article>
-</section>
-
 <div class="cabinet-layout">
     <section class="surface">
-        <p class="eyebrow">Налаштування</p>
+        <p class="eyebrow"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Налаштування</p>
         <h2>Профіль користувача</h2>
         <form asp-action="Update" method="post" class="mt-3">
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
@@ -88,12 +63,37 @@
                 <button class="btn btn-primary" type="submit">Оновити</button>
             </div>
         </form>
+
+        <div class="cabinet-metrics @(Model.IsAdmin ? "is-admin" : string.Empty)" aria-label="Коротка статистика кабінету">
+            @if (!Model.IsAdmin)
+            {
+                <article class="cabinet-metric">
+                    <span>Мої рослини</span>
+                    <strong>@Model.PlantCount</strong>
+                </article>
+                <article class="cabinet-metric accent">
+                    <span>Полив завтра</span>
+                    <strong>@Model.DueTomorrowCount</strong>
+                </article>
+            }
+            else
+            {
+                <article class="cabinet-metric">
+                    <span>Роль</span>
+                    <strong>Admin</strong>
+                </article>
+            }
+            <article class="cabinet-metric">
+                <span>Останній вхід</span>
+                <strong>@(Model.LastLoginAtUtc?.ToLocalTime().ToString("dd.MM") ?? "—")</strong>
+            </article>
+        </div>
     </section>
 
     <section class="surface">
         <div class="security-stack">
             <div class="security-block">
-                <p class="eyebrow">Безпека</p>
+                <p class="eyebrow"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Безпека</p>
                 <h2>Логін</h2>
                 <p class="heading-copy">
                     @if (Model.CanChangeLogin)
@@ -129,7 +129,7 @@
             </div>
 
             <div class="security-block">
-                <p class="eyebrow">Безпека</p>
+                <p class="eyebrow"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Безпека</p>
                 <h2>Пароль</h2>
                 <p class="heading-copy">
                     @if (Model.CanChangePassword)
