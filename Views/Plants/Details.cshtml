@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = Model.Name;
+    var today = DateOnly.FromDateTime(DateTime.Now);
+    var effectiveStatus = Model.GetEffectiveStatus(today);
 }
 
 <section class="plant-detail">
@@ -25,7 +27,7 @@
                         <p class="heading-copy">@Model.Variety</p>
                     }
                 </div>
-                <span class="status-pill">@Model.Status.GetDisplayName()</span>
+                <span class="status-pill @(effectiveStatus == PlantStatus.NeedsCare ? "status-pill-danger" : string.Empty)">@effectiveStatus.GetDisplayName()</span>
             </div>
 
             <dl class="fact-grid">

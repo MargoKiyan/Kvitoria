@@ -154,7 +154,7 @@ public class Plant : BaseEntity
     public void UpdateCareSchedule(DateOnly? lastWateredDate)
     {
         LastWateredDate = lastWateredDate;
-        NextWateringDate = lastWateredDate?.AddDays(WateringFrequency.ToDayInterval());
+        NextWateringDate = CalculateNextWateringDate(lastWateredDate);
         MarkUpdated();
     }
 
@@ -183,7 +183,7 @@ public class Plant : BaseEntity
     public void MarkWatered(DateOnly performedOn)
     {
         LastWateredDate = performedOn;
-        NextWateringDate = performedOn.AddDays(WateringFrequency.ToDayInterval());
+        NextWateringDate = CalculateNextWateringDate(performedOn);
         MarkUpdated();
     }
 
@@ -191,7 +191,17 @@ public class Plant : BaseEntity
     {
         return Status != PlantStatus.Archived
             && (Status == PlantStatus.NeedsCare
-                || NextWateringDate.HasValue && NextWateringDate.Value <= today);
+                || IsWateringDue(today));
+    }
+
+    public PlantStatus GetEffectiveStatus(DateOnly today)
+    {
+        return NeedsAttention(today) ? PlantStatus.NeedsCare : Status;
+    }
+
+    public bool IsWateringDue(DateOnly today)
+    {
+        return NextWateringDate.HasValue && NextWateringDate.Value <= today;
     }
 
     public bool HasWateringOn(DateOnly date)
@@ -204,5 +214,10 @@ public class Plant : BaseEntity
     private static string? Normalize(string? value)
     {
         return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    }
+
+    private DateOnly? CalculateNextWateringDate(DateOnly? lastWateredDate)
+    {
+        return lastWateredDate?.AddDays(WateringFrequency.ToDayInterval());
     }
 }

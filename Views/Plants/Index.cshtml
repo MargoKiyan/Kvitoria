@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Колекція";
+    var today = DateOnly.FromDateTime(DateTime.Now);
 }
 
 <section class="page-heading">
@@ -48,6 +49,7 @@ else
     <section class="plant-card-grid paginated-grid mt-4">
         @foreach (var plant in Model.Plants)
         {
+            var effectiveStatus = plant.GetEffectiveStatus(today);
             <article class="plant-card">
                 @if (string.IsNullOrWhiteSpace(plant.ImageUrl))
                 {
@@ -65,7 +67,7 @@ else
                             <h2>@plant.Name</h2>
                             <p>@plant.Species</p>
                         </div>
-                        <span class="status-pill">@plant.Status.GetDisplayName()</span>
+                        <span class="status-pill @(effectiveStatus == PlantStatus.NeedsCare ? "status-pill-danger" : string.Empty)">@effectiveStatus.GetDisplayName()</span>
                     </div>
                     <dl class="mini-facts">
                         <div>

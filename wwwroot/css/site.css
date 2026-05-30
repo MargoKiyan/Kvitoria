@@ -632,6 +632,12 @@ a:hover {
   white-space: nowrap;
 }
 
+.status-pill-danger {
+  color: #b42318;
+  background: #fff1f0;
+  border-color: #ffb4a8;
+}
+
 .mini-facts,
 .fact-grid {
   display: grid;

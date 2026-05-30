@@ -78,7 +78,7 @@ public class PlantCollectionService(
 
         if (status.HasValue)
         {
-            query = query.Where(plant => plant.Status == status.Value);
+            query = ApplyStatusFilter(query, status.Value, today);
         }
 
         var filteredCount = await query.CountAsync(cancellationToken);
@@ -267,6 +267,30 @@ public class PlantCollectionService(
         return string.IsNullOrWhiteSpace(userContext.UserId)
             ? query.Where(plant => false)
             : query.Where(plant => plant.UserId == userContext.UserId);
+    }
+
+    private static IQueryable<Plant> ApplyStatusFilter(
+        IQueryable<Plant> query,
+        PlantStatus status,
+        DateOnly today)
+    {
+        if (status == PlantStatus.NeedsCare)
+        {
+            return query.Where(plant =>
+                plant.Status == PlantStatus.NeedsCare
+                || plant.Status != PlantStatus.Archived
+                    && plant.NextWateringDate.HasValue
+                    && plant.NextWateringDate.Value <= today);
+        }
+
+        if (status == PlantStatus.Archived)
+        {
+            return query.Where(plant => plant.Status == PlantStatus.Archived);
+        }
+
+        return query.Where(plant =>
+            plant.Status == status
+            && (!plant.NextWateringDate.HasValue || plant.NextWateringDate.Value > today));
     }
 
     private async Task ApplyPlantFormAsync(
