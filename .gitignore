@@ -43,10 +43,6 @@ _ReSharper*/
 .VolumeIcon.icns
 Icon?
 
-# Documentation files requested to stay out of commits
-docs/
-*.md
-
 # Generated application data
 App_Data/Reports/
 App_Data/Reports/**
