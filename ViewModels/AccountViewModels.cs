@@ -24,6 +24,7 @@ public class RegisterViewModel
 
     [Required(ErrorMessage = "Вкажіть email.")]
     [EmailAddress(ErrorMessage = "Вкажіть коректний email.")]
+    [RegularExpression(AccountValidationRules.EmailPattern, ErrorMessage = AccountValidationRules.EmailError)]
     [Display(Name = "Email")]
     public string Email { get; set; } = string.Empty;
 

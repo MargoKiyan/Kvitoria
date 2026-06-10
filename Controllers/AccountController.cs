@@ -30,7 +30,7 @@ public class AccountController(
         }
 
         var login = AccountValidationRules.NormalizeLogin(model.Login);
-        var email = model.Email.Trim();
+        var email = AccountValidationRules.NormalizeEmail(model.Email);
 
         if (await userManager.FindByNameAsync(login) is not null)
         {
